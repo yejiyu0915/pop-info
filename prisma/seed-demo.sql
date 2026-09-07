@@ -1,7 +1,7 @@
 -- Demo-only popup data for an empty development or showcase database.
 -- It never contains a usable login password. Run with:
 -- docker compose --env-file .env -f docker-compose.prod.yml exec -T db \
---   mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < prisma/seed-demo.sql
+--   mysql --default-character-set=utf8mb4 -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < prisma/seed-demo.sql
 
 INSERT INTO `User` (`email`, `password`, `name`, `role`, `updatedAt`)
 VALUES (
