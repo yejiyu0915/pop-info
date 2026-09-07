@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { EDITORIAL_ARTICLES } from '@/lib/editorial';
@@ -20,7 +21,17 @@ export default function EditorsPickIndexPage() {
           {EDITORIAL_ARTICLES.map((article) => (
             <li key={article.slug}>
               <Link href={`/editors-pick/${article.slug}`} className="editors-page__card">
-                <div className="editors-page__thumb" aria-hidden />
+                <div className="editors-page__thumb" aria-hidden>
+                  {article.imageUrl && (
+                    <Image
+                      src={article.imageUrl}
+                      alt=""
+                      fill
+                      sizes="(max-width: 640px) 100vw, 140px"
+                      className="editors-page__thumb-img"
+                    />
+                  )}
+                </div>
                 <div className="editors-page__body">
                   <span className="editors-page__meta">{article.meta}</span>
                   <h2 className="editors-page__title">{article.title}</h2>

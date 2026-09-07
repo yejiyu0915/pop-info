@@ -2312,6 +2312,13 @@
   animation: editors-hero-media-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.editors__hero-image,
+.editors__sub-thumb-image,
+.editors-page__thumb-img,
+.editors-detail__visual-img {
+  object-fit: cover;
+}
+
 .editors__hero-body {
   padding: 1.25rem 1.35rem 1.4rem;
   animation: editors-hero-body-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
@@ -2477,6 +2484,8 @@
 }
 
 .editors__sub-thumb {
+  position: relative;
+  overflow: hidden;
   width: 72px;
   height: 72px;
   border-radius: 10px;
@@ -2558,6 +2567,7 @@
 }
 
 .editors-page__thumb {
+  position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
   border-radius: 10px;
@@ -2620,6 +2630,17 @@
   font-size: 1.05rem;
   line-height: 1.6;
   color: var(--color-muted);
+}
+
+.editors-detail__visual {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  margin: 0 0 var(--space-5);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-muted);
 }
 
 .editors-detail__body {

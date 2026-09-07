@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Compass, Heart, MapPinned, Plus, Sparkles } from 'lucide-react';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { PostCard } from '@/components/posts/PostCard';
 import { Pagination } from '@/components/ui/Pagination';
 import { fetchMyBookmarks } from '@/lib/bookmarks';
+import { isCreatorOrAbove } from '@/lib/roles';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { PaginatedPosts } from '@/types/post';
 
@@ -28,6 +30,8 @@ export default function MyPage() {
     setError(false);
     setRetryKey((k) => k + 1);
   };
+
+  const roleLabel = user?.role === 'ADMIN' ? '관리자' : user?.role === 'CREATOR' ? '크리에이터' : '탐색자';
 
   useEffect(() => {
     let cancelled = false;
@@ -62,20 +66,48 @@ export default function MyPage() {
   return (
     <main className="form-page page-shell">
       <AppHeader />
-      <div className="container">
-
-        <section className="mypage__profile">
-          <h2 className="mypage__profile-title">내 정보</h2>
-          {user && (
-            <>
-              <p className="mypage__profile-name">{user.name ?? '-'}</p>
-              <p className="mypage__profile-email">{user.email}</p>
-            </>
-          )}
+      <div className="container mypage">
+        <section className="mypage__intro" aria-labelledby="mypage-title">
+          <div className="mypage__intro-copy">
+            <p className="mypage__eyebrow">MY POPCAST</p>
+            <h1 id="mypage-title" className="mypage__title">
+              {user?.name ? `${user.name}님의 저장 목록` : '나의 저장 목록'}
+            </h1>
+            <p className="mypage__lead">마음에 둔 팝업을 다시 확인하고, 방문 계획을 이어가세요.</p>
+          </div>
+          <div className="mypage__profile" aria-label="내 계정 정보">
+            <span className="mypage__profile-label">계정</span>
+            <strong className="mypage__profile-name">{user?.name ?? '사용자'}</strong>
+            <span className="mypage__profile-email">{user?.email}</span>
+            <span className="mypage__role">{roleLabel}</span>
+          </div>
         </section>
 
-        <section>
-          <h2 className="mypage__section-title">좋아요한 팝업</h2>
+        <section className="mypage__overview" aria-label="저장 현황">
+          <div className="mypage__overview-item">
+            <span className="icon-wrapper" aria-hidden><Heart className="icon-line" size={16} strokeWidth={1.5} /></span>
+            <div><strong>{loading ? '—' : bookmarks?.meta.total ?? 0}</strong><span>저장한 팝업</span></div>
+          </div>
+          <div className="mypage__overview-item">
+            <span className="icon-wrapper" aria-hidden><Sparkles className="icon-line" size={16} strokeWidth={1.5} /></span>
+            <div><strong>{roleLabel}</strong><span>현재 계정</span></div>
+          </div>
+          <div className="mypage__overview-action">
+            <Link href="/explore" className="mypage__text-link"><Compass className="icon-line" size={15} strokeWidth={1.5} />팝업 탐색</Link>
+            {isCreatorOrAbove(user?.role) && (
+              <Link href="/posts/write" className="mypage__text-link"><Plus className="icon-line" size={15} strokeWidth={1.5} />팝업 등록</Link>
+            )}
+          </div>
+        </section>
+
+        <section className="mypage__saved" aria-labelledby="saved-popups-title">
+          <div className="mypage__section-head">
+            <div>
+              <p className="mypage__eyebrow">SAVED PLACES</p>
+              <h2 id="saved-popups-title" className="mypage__section-title">좋아요한 팝업</h2>
+            </div>
+            {!loading && bookmarks && bookmarks.data.length > 0 && <span className="mypage__count">{bookmarks.meta.total}개</span>}
+          </div>
           {error ? (
             <div className="home__state">
               <p className="home__message">데이터를 불러오지 못했습니다.</p>
@@ -101,11 +133,13 @@ export default function MyPage() {
               />
             </>
           ) : (
-            <div className="home__state">
-              <p className="home__message">좋아요한 팝업이 없습니다.</p>
-              <Link href="/" className="home__link">
-                팝업 둘러보러 가기
-              </Link>
+            <div className="mypage__empty">
+              <span className="icon-wrapper" aria-hidden><MapPinned className="icon-line" size={18} strokeWidth={1.5} /></span>
+              <div>
+                <h3>아직 저장한 팝업이 없어요.</h3>
+                <p>마음에 드는 팝업의 하트를 눌러 나만의 방문 목록을 만들어보세요.</p>
+              </div>
+              <Link href="/explore" className="mypage__empty-link"><Sparkles className="icon-line" size={15} strokeWidth={1.5} />팝업 둘러보기</Link>
             </div>
           )}
         </section>

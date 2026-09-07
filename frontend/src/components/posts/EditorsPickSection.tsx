@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import {
@@ -178,6 +179,15 @@ export function EditorsPickSection() {
           >
             <div key={selected.slug} className="editors__hero-swap">
               <div className="editors__hero-visual" aria-hidden>
+                {selected.imageUrl && (
+                  <Image
+                    src={selected.imageUrl}
+                    alt=""
+                    fill
+                    sizes="(max-width: 900px) 100vw, 60vw"
+                    className="editors__hero-image"
+                  />
+                )}
                 <span className="editors__hero-glow" />
               </div>
               <div className="editors__hero-body">
@@ -227,7 +237,17 @@ export function EditorsPickSection() {
                     onClick={(event) => onRailClick(i, event)}
                     onKeyDown={(event) => onRailKeyDown(i, event)}
                   >
-                    <div className="editors__sub-thumb" aria-hidden />
+                    <div className="editors__sub-thumb" aria-hidden>
+                      {article.imageUrl && (
+                        <Image
+                          src={article.imageUrl}
+                          alt=""
+                          fill
+                          sizes="72px"
+                          className="editors__sub-thumb-image"
+                        />
+                      )}
+                    </div>
                     <div className="editors__sub-body">
                       <span className="editors__sub-meta">{article.meta}</span>
                       <span className="editors__sub-title">{article.title}</span>

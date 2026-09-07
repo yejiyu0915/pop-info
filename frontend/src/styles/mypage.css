@@ -1,0 +1,214 @@
+/* Personal saved-popup planning surface. */
+.mypage {
+  padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.mypage__intro {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+  margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+@media (min-width: 768px) {
+  .mypage__intro {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.36fr);
+    align-items: end;
+    gap: clamp(2rem, 6vw, 5rem);
+  }
+}
+
+.mypage__eyebrow {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-meta);
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--color-muted);
+}
+
+.mypage__title {
+  margin: 0;
+  max-width: 17ch;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1.07;
+  color: var(--color-charcoal);
+}
+
+.mypage__lead {
+  max-width: 45ch;
+  margin: var(--space-4) 0 0;
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+
+.mypage__profile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  padding: var(--space-5);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.mypage__profile-label,
+.mypage__role,
+.mypage__count {
+  font-size: var(--font-meta);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.mypage__profile-name {
+  font-size: 1.1rem;
+  color: var(--color-charcoal);
+}
+
+.mypage__profile-email {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-size: 0.82rem;
+  color: var(--color-muted);
+}
+
+.mypage__role {
+  margin-top: var(--space-2);
+  color: var(--color-brick);
+}
+
+.mypage__overview {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin-bottom: clamp(2.75rem, 6vw, 4.5rem);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mypage__overview-item,
+.mypage__overview-action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 6.5rem;
+  padding: var(--space-4) 0;
+}
+
+.mypage__overview-item + .mypage__overview-item {
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--color-border);
+}
+
+.mypage__overview-item strong,
+.mypage__overview-item span:not(.icon-wrapper) {
+  display: block;
+}
+
+.mypage__overview-item strong {
+  font-size: 1.35rem;
+  letter-spacing: -0.04em;
+}
+
+.mypage__overview-item span:not(.icon-wrapper) {
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+.mypage__overview-action {
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+@media (min-width: 768px) {
+  .mypage__overview {
+    grid-template-columns: minmax(180px, 0.28fr) minmax(180px, 0.28fr) 1fr;
+  }
+
+  .mypage__overview-action {
+    grid-column: auto;
+    justify-content: flex-end;
+    padding-left: var(--space-5);
+    border-top: 0;
+    border-left: 1px solid var(--color-border);
+  }
+}
+
+.mypage__text-link,
+.mypage__empty-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: var(--touch-min);
+  color: var(--color-charcoal);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+
+.mypage__text-link:hover,
+.mypage__empty-link:hover {
+  color: var(--color-brick);
+}
+
+.mypage__saved {
+  min-width: 0;
+}
+
+.mypage__section-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.mypage__section-title {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: var(--font-section);
+  letter-spacing: -0.025em;
+}
+
+.mypage__count {
+  padding-bottom: 0.2rem;
+}
+
+.mypage__empty {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3) var(--space-4);
+  align-items: start;
+  padding: clamp(1.4rem, 4vw, 2.25rem) 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mypage__empty h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+
+.mypage__empty p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.mypage__empty-link {
+  grid-column: 2;
+  justify-self: start;
+  margin-top: 0.2rem;
+  color: var(--color-brick);
+}

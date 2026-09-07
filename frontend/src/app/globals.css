@@ -2,6 +2,7 @@
 @import '../styles/shell.css';
 @import '../styles/detail.css';
 @import '../styles/forms.css';
+@import '../styles/mypage.css';
 
 :root {
   /* Weverse: a quiet white stage with one teal action signal. */

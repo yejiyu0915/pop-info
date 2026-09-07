@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { AppHeader } from '@/components/layout/AppHeader';
@@ -22,6 +23,18 @@ export default async function EditorsPickDetailPage({
         <p className="editors-detail__meta">{article.meta}</p>
         <h1 className="editors-detail__title">{article.title}</h1>
         <p className="editors-detail__brief">{article.briefing}</p>
+        {article.imageUrl && (
+          <div className="editors-detail__visual">
+            <Image
+              src={article.imageUrl}
+              alt=""
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 42rem"
+              className="editors-detail__visual-img"
+            />
+          </div>
+        )}
         <div className="editors-detail__body">
           <p>
             이 페이지는 에디토리얼 CMS 연동 전 플레이스홀더입니다. 추후 ADMIN이 등록하는 매거진

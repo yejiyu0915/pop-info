@@ -15,7 +15,7 @@ export const EDITORIAL_ARTICLES: EditorialArticle[] = [
     briefing:
       '에디터가 직접 다녀온 성수 한 켠의 짧은 전시를 한곳에. 이번 주만 열려 있는 스팟을 감도 있게 골랐습니다.',
     meta: 'Editor · 큐레이션',
-    imageUrl: null,
+    imageUrl: '/demo-posters/poster-03.svg',
     featured: true,
   },
   {
@@ -23,28 +23,28 @@ export const EDITORIAL_ARTICLES: EditorialArticle[] = [
     title: '홍대 밤의 푸드 팝업, 세 가지 코스',
     briefing: '줄 서는 맛과 조용히 즐기기 좋은 코너를 나눠 정리했습니다.',
     meta: '푸드 · 투어',
-    imageUrl: null,
+    imageUrl: '/demo-posters/poster-07.svg',
   },
   {
     slug: 'yongsan-art-walk',
     title: '용산 아트 워크: 주말 코스 메모',
     briefing: '한남·이태원 사이, 걷는 속도에 맞춘 전시 루트.',
     meta: '아트 · 루트',
-    imageUrl: null,
+    imageUrl: '/demo-posters/poster-04.svg',
   },
   {
     slug: 'guest-reviews-live',
     title: '생생 후기: 방문자들이 남긴 한 줄',
     briefing: '현장 온도가 느껴지는 코멘트만 골랐습니다.',
     meta: '리뷰 · 스냅',
-    imageUrl: null,
+    imageUrl: '/demo-posters/poster-09.svg',
   },
   {
     slug: 'editors-notebook',
     title: '에디터 노트: 좋은 팝업을 고르는 기준',
     briefing: '공간·동선·브랜드 메시지 — POPCAST가 보는 세 가지.',
     meta: '에디토리얼',
-    imageUrl: null,
+    imageUrl: '/demo-posters/poster-10.svg',
   },
 ];
 
