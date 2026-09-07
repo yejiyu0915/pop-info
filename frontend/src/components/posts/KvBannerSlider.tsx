@@ -63,7 +63,8 @@ export function KvBannerSlider() {
 
   const slides: KvSlide[] = useMemo(() => {
     const fromPosts: KvSlide[] = postSlides.map((post) => ({ type: 'post', post }));
-    const fromFeatures: KvSlide[] = KV_FEATURE_SLIDES.map((feature) => ({
+    // KV에는 실제 이미지가 있는 기획 콘텐츠만 노출한다.
+    const fromFeatures: KvSlide[] = KV_FEATURE_SLIDES.filter((feature) => Boolean(feature.imageUrl)).map((feature) => ({
       type: 'feature',
       feature,
     }));
