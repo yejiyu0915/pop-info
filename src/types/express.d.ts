@@ -7,6 +7,7 @@ declare global {
         id: number;
         email: string;
         name: string | null;
+        role?: import('../modules/users/dto/user-role.enum').UserRole;
       };
     }
   }

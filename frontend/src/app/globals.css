@@ -1,13 +1,291 @@
+@import '../styles/home.css';
+@import '../styles/shell.css';
+@import '../styles/detail.css';
+@import '../styles/forms.css';
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Weverse: a quiet white stage with one teal action signal. */
+  --font-sans: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
+  --color-cream: oklch(0.995 0.002 220);
+  --color-surface: var(--color-cream);
+  --color-surface-raised: var(--color-cream);
+  --color-border: oklch(0.908 0.002 220);
+  --color-glass-edge: var(--color-border);
+  --radius-card: 4px;
+  --radius-control: 8px;
+  --radius-pill: 100px;
+  --color-charcoal: oklch(0.255 0.012 250);
+  --color-muted: oklch(0.63 0.004 250);
+  --color-faint: oklch(0.73 0.003 250);
+  --color-brick: oklch(0.7 0.12 200);
+  --color-accent: oklch(0.75 0.13 200);
+  --color-accent-hover: var(--color-brick);
+  --color-accent-fill: var(--color-accent);
+  --color-accent-coral: var(--color-accent);
+  --color-accent-yellow: oklch(0.68 0.18 5);
+  --color-accent-blue: oklch(0.64 0.14 270);
+  --color-accent-lavender: oklch(0.8 0.1 190);
+  --color-accent-cyan: var(--color-accent);
+  --color-accent-soft: oklch(0.95 0.025 200);
+  --color-accent-pink: var(--color-accent-yellow);
+  --color-deep-green: oklch(0.75 0.15 155);
+  --color-surface-muted: oklch(0.975 0.002 220);
+  --color-surface-empty: oklch(0.95 0.002 220);
+  --color-on-accent: oklch(0.995 0.002 220);
+  --color-visual-dark: oklch(0.33 0.002 220);
+  --color-on-dark: oklch(0.995 0.002 220);
+  --color-on-dark-muted: oklch(0.85 0.002 220);
+  --timeline-bar-fashion: var(--color-accent);
+  --timeline-bar-food: var(--color-accent);
+  --timeline-bar-art: var(--color-accent);
+  --timeline-bar-lifestyle: var(--color-accent);
+  --timeline-bar-etc: var(--color-accent);
+  --color-line: var(--color-border);
+  --background: var(--color-cream);
+  --foreground: var(--color-charcoal);
+  /* Flat paper — no elevation / glow */
+  --shadow-soft: none;
+  --shadow-card: none;
+  --glow-accent: none;
+  /* Legacy names kept — solid fills only (no gradients) */
+  /* Utility CTAs default to charcoal; auth/KV body CTAs use coral via rules */
+  --gradient-iridescent: var(--color-charcoal);
+  --gradient-iridescent-soft: var(--color-surface-muted);
+  /* Flat gallery-white canvas */
+  --page-atmosphere: var(--color-cream);
+  --glass-blur: none;
+  --container-max: 1360px;
+  --container-padding: 24px;
+  --font-meta: 0.72rem;
+  --font-meta-opacity: 0.9;
+  --font-title: clamp(2.5rem, 5.5vw, 4.25rem);
+  --font-section: clamp(1.5rem, 3.2vw, 2.05rem);
+  --font-size-body: 1rem;
+  --font-body-strong: 1.0625rem;
+  /* Spacing scale — prefer these over one-off rem values */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --gap-grid: clamp(1rem, 2.5vw, 1.5rem);
+  --icon-stroke: 1.5;
+  --icon-size: 16px;
+  --icon-size-sm: 14px;
+  --icon-size-lg: 18px;
+  --icon-chip-size: 32px;
+  --icon-chip-size-sm: 28px;
+  --icon-chip-bg: var(--color-surface-muted);
+  --icon-chip-bg-brick: var(--color-accent-soft);
+  --control-height: 2.5rem;
+  --control-height-sm: 2.25rem;
+  /* Monochrome controls, teal only for the current action. */
+  --state-inactive-bg: transparent;
+  --state-inactive-border: transparent;
+  --state-inactive-fg: var(--color-muted);
+  --state-active-bg: var(--color-accent-fill);
+  --state-active-fg: var(--color-on-accent);
+  --state-active-border: var(--color-accent);
+  --state-active-shadow: none;
+  /* Breakpoints — use same px literals in @media (var() unsupported in MQ) */
+  --bp-sm: 640px;
+  --bp-md: 768px;
+  --bp-lg: 900px;
+  --touch-min: 44px;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (max-width: 640px) {
+  /* --bp-sm */
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --container-padding: 16px;
   }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+  .header__link,
+  .header__profile,
+  .filter__segment-btn,
+  .filter__toggle,
+  .kv__nav-btn,
+  .timeline__nav-btn,
+  .comment__action,
+  .auth__btn,
+  .home__retry,
+  .timeline__retry,
+  .home__link,
+  .action__copy,
+  .action__bookmark {
+    min-height: var(--touch-min);
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .comment__action,
+  .auth__btn,
+  .home__retry,
+  .timeline__retry,
+  .home__link {
+    padding-inline: 0.25rem;
+  }
+
+  .filter__segment-btn,
+  .filter__toggle {
+    padding: 0.45rem 0.7rem;
+  }
+
+  .timeline__nav-btn,
+  .kv__nav-btn {
+    min-width: var(--touch-min);
+    justify-content: center;
+  }
+}
+
+.header__link:active,
+.header__profile:active,
+.filter__segment-btn:active,
+.filter__toggle:active,
+.kv__nav-btn:active,
+.timeline__nav-btn:active,
+.comment__action:active,
+.auth__btn:active:not(:disabled),
+.home__retry:active,
+.timeline__retry:active,
+.action__bookmark:active:not(:disabled),
+.action__copy:active,
+.action__text:active:not(:disabled) {
+  opacity: 0.65;
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+
+  .header__link:active,
+  .filter__segment-btn:active,
+  .filter__toggle:active,
+  .kv__nav-btn:active,
+  .timeline__nav-btn:active,
+  .comment__action:active,
+  .auth__btn:active:not(:disabled),
+  .home__retry:active,
+  .timeline__retry:active,
+  .action__bookmark:active:not(:disabled),
+  .action__copy:active,
+  .action__text:active:not(:disabled),
+  .kv__pause:active {
+    transform: none;
+  }
+
+  .kv__poster-img {
+    transition: none !important;
+  }
+
+  .sparkle-glint::before,
+  .sparkle-glint::after {
+    animation: none !important;
+    opacity: 0;
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.page-shell {
+  padding: clamp(1.5rem, 4vw, 2rem) 0 clamp(2.5rem, 6vw, 4rem);
+  background: transparent;
+  color: var(--color-charcoal);
+  font-family: var(--font-body), 'Noto Sans KR', sans-serif;
+}
+
+/* Paper surface language — header / filter / cards / timeline */
+.surface-block,
+.glass-panel {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: clamp(1rem, 3vw, 1.5rem);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.icon-line {
+  display: block;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.icon-wrapper--sm .icon-line {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-chip-size);
+  height: var(--icon-chip-size);
+  border-radius: 50%;
+  background-color: var(--icon-chip-bg);
+  color: var(--color-charcoal);
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.icon-wrapper--sm {
+  width: var(--icon-chip-size-sm);
+  height: var(--icon-chip-size-sm);
+}
+
+.icon-wrapper--brick {
+  background-color: var(--icon-chip-bg-brick);
+  color: var(--color-brick);
+}
+
+.icon-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1.2;
+}
+
+.icon-inline .icon-line {
+  margin-top: 0;
+}
+
+.action__bookmark:not(.action__bookmark--active):hover:not(:disabled) .icon-wrapper {
+  background-color: color-mix(in oklch, var(--color-accent-coral) 22%, transparent);
+  color: color-mix(in oklch, var(--color-accent-coral) 78%, var(--color-charcoal));
+}
+
+/* Sparkle hooks retained but empty — clear paper relies on solid color, not glints */
+.sparkle-glint {
+  isolation: isolate;
+}
+
+.sparkle-glint::before,
+.sparkle-glint::after {
+  content: none;
 }
 
 html {
@@ -17,7 +295,7 @@ html {
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -25,8 +303,9 @@ body {
   display: flex;
   flex-direction: column;
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--page-atmosphere);
+  background-attachment: fixed;
+  font-family: var(--font-body), 'Noto Sans KR', Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -42,8 +321,22 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+button {
+  font-family: inherit;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brick);
+  outline-offset: 2px;
+}
+
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible) {
+  outline: none;
 }

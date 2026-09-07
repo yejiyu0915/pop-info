@@ -1,13 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
-import { CreateUserDto } from './dto/create-user.dto';
+import { bookmarkService } from '../bookmarks/bookmark.service';
 import { userService } from './user.service';
 
+function parsePagination(query: Request['query']) {
+  const page = Math.max(1, parseInt(String(query.page ?? '1'), 10) || 1);
+  const limit = Math.min(100, Math.max(1, parseInt(String(query.limit ?? '10'), 10) || 10));
+  return { page, limit };
+}
+
 export class UserController {
-  async create(req: Request, res: Response, next: NextFunction) {
+  async getMyBookmarks(req: Request, res: Response, next: NextFunction) {
     try {
-      const dto = req.body as CreateUserDto;
-      const user = await userService.createUser(dto);
-      res.status(201).json(user);
+      const { page, limit } = parsePagination(req.query);
+      const result = await bookmarkService.findByUser(req.user!.id, { page, limit });
+      res.json(result);
     } catch (error) {
       next(error);
     }

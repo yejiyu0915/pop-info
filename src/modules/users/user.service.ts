@@ -33,6 +33,14 @@ export class UserService {
 
     return user;
   }
+
+  async createUserFromPasswordHash(email: string, passwordHash: string, name: string) {
+    const user = await prisma.user.create({
+      data: { email, password: passwordHash, name },
+      select: { id: true, email: true, name: true, createdAt: true },
+    });
+    return user;
+  }
 }
 
 export const userService = new UserService();

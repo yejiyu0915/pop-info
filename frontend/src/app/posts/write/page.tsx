@@ -1,64 +1,57 @@
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
+import { AppHeader } from '@/components/layout/AppHeader';
+import { PopupPostForm } from '@/components/posts/PopupPostForm';
+import { isCreatorOrAbove } from '@/lib/roles';
 import { createPost } from '@/lib/posts';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function WritePostPage() {
   const router = useRouter();
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [submitting, setSubmitting] = useState(false);
+  const { user, isLoading } = useAuthStore();
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    try {
-      await createPost(title, content);
-      toast.success('게시글이 등록되었습니다.');
-      router.push('/');
-    } finally {
-      setSubmitting(false);
+  useEffect(() => {
+    if (isLoading) return;
+    if (!user || !isCreatorOrAbove(user.role)) {
+      toast.error('권한이 없습니다.');
+      router.replace('/');
     }
-  };
+  }, [isLoading, user, router]);
+
+  if (isLoading || !user || !isCreatorOrAbove(user.role)) {
+    return (
+      <main className="form-page page-shell">
+        <AppHeader />
+      <div className="container">
+          <div className="home__state">
+            <p className="home__message">불러오는 중...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
-    <main style={{ maxWidth: 600, margin: '2rem auto', padding: '0 1rem' }}>
-      <h1>글쓰기</h1>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <label>
-          제목
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            maxLength={200}
-            style={{ display: 'block', width: '100%', padding: '0.5rem', marginTop: '0.25rem' }}
+    <main className="form-page page-shell">
+      <AppHeader />
+      <div className="container">
+        <div className="form-page__inner">
+          <h2 className="form-page__title">팝업 등록</h2>
+          <PopupPostForm
+            mode="create"
+            submitLabel="등록"
+            cancelHref="/"
+            onSubmit={async (values) => {
+              const post = await createPost(values);
+              toast.success('팝업이 등록되었습니다.');
+              router.push(`/posts/${post.id}`);
+            }}
           />
-        </label>
-        <label>
-          내용
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-            rows={8}
-            maxLength={5000}
-            style={{ display: 'block', width: '100%', padding: '0.5rem', marginTop: '0.25rem' }}
-          />
-        </label>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button type="submit" disabled={submitting}>
-            {submitting ? '등록 중...' : '등록'}
-          </button>
-          <Link href="/">
-            <button type="button">취소</button>
-          </Link>
         </div>
-      </form>
+      </div>
     </main>
   );
 }

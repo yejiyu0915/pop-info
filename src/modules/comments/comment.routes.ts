@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authMiddleware } from '../../middlewares/auth.middleware';
 import { validateBody } from '../../middlewares/validate.middleware';
+import { csrfMiddleware } from '../../middlewares/csrf.middleware';
 import { commentController } from './comment.controller';
 import { CreateCommentDto } from './dto/create-comment.dto';
 
@@ -58,6 +59,6 @@ router.get('/', commentController.findByPost.bind(commentController));
  *       404:
  *         description: Post not found
  */
-router.post('/', authMiddleware, validateBody(CreateCommentDto), commentController.create.bind(commentController));
+router.post('/', authMiddleware, csrfMiddleware, validateBody(CreateCommentDto), commentController.create.bind(commentController));
 
 export default router;

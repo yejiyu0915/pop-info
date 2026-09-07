@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authMiddleware } from '../../middlewares/auth.middleware';
 import { validateBody } from '../../middlewares/validate.middleware';
+import { csrfMiddleware } from '../../middlewares/csrf.middleware';
 import { commentController } from './comment.controller';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
@@ -10,7 +11,7 @@ const router = Router();
  * @swagger
  * /api/comments/{id}:
  *   patch:
- *     summary: Update a comment (author only)
+ *     summary: Update a comment (author or ADMIN)
  *     tags: [Comments]
  *     parameters:
  *       - in: path
@@ -35,17 +36,17 @@ const router = Router();
  *       401:
  *         description: Unauthorized
  *       403:
- *         description: Forbidden - not the author
+ *         description: Forbidden - not the author or ADMIN
  *       404:
  *         description: Comment not found
  */
-router.patch('/:id', authMiddleware, validateBody(UpdateCommentDto), commentController.updateById.bind(commentController));
+router.patch('/:id', authMiddleware, csrfMiddleware, validateBody(UpdateCommentDto), commentController.updateById.bind(commentController));
 
 /**
  * @swagger
  * /api/comments/{id}:
  *   delete:
- *     summary: Delete a comment (author only)
+ *     summary: Delete a comment (author or ADMIN)
  *     tags: [Comments]
  *     parameters:
  *       - in: path
@@ -59,10 +60,10 @@ router.patch('/:id', authMiddleware, validateBody(UpdateCommentDto), commentCont
  *       401:
  *         description: Unauthorized
  *       403:
- *         description: Forbidden - not the author
+ *         description: Forbidden - not the author or ADMIN
  *       404:
  *         description: Comment not found
  */
-router.delete('/:id', authMiddleware, commentController.deleteById.bind(commentController));
+router.delete('/:id', authMiddleware, csrfMiddleware, commentController.deleteById.bind(commentController));
 
 export default router;

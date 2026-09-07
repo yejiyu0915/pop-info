@@ -1,10 +1,12 @@
 import { create } from 'zustand';
-import { api } from '@/lib/api';
+import { api, setCsrfToken } from '@/lib/api';
+import type { UserRole } from '@/lib/roles';
 
 export interface User {
   id: number;
   email: string;
   name: string | null;
+  role: UserRole;
 }
 
 interface AuthState {
@@ -30,18 +32,21 @@ export const useAuthStore = create<AuthState>((set) => ({
   checkAuth: async () => {
     set({ isLoading: true });
     try {
-      const { data } = await api.get<{ user: User }>('/api/auth/me');
+      const { data } = await api.get<{ user: User; csrfToken?: string }>('/api/auth/me');
+      setCsrfToken(data.csrfToken);
       set({ user: data.user, isAuthenticated: true, isLoading: false });
     } catch {
+      setCsrfToken(null);
       set({ user: null, isAuthenticated: false, isLoading: false });
     }
   },
 
   login: async (email, password) => {
-    const { data } = await api.post<{ user: User }>('/api/auth/login', {
+    const { data } = await api.post<{ user: User; csrfToken: string }>('/api/auth/login', {
       email,
       password,
     });
+    setCsrfToken(data.csrfToken);
     set({ user: data.user, isAuthenticated: true, isLoading: false });
   },
 
@@ -49,6 +54,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       await api.post('/api/auth/logout');
     } finally {
+      setCsrfToken(null);
       set({ user: null, isAuthenticated: false, isLoading: false });
     }
   },

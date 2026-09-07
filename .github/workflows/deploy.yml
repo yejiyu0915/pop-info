@@ -2,7 +2,7 @@ name: CI/CD Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 env:
   DATABASE_URL: mysql://ci:ci@localhost:3306/ci
@@ -54,12 +54,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
+            set -eu
             cd ${{ secrets.DEPLOY_PATH }}
-            git pull origin main
-            npm ci
-            npx prisma generate
-            npx prisma migrate deploy
-            npm run build
-            cd frontend && npm ci && npm run build
-            cd ..
-            pm2 reload ecosystem.config.js --update-env || pm2 start ecosystem.config.js
+            git pull origin master
+            docker compose --env-file .env -f docker-compose.prod.yml up -d --build

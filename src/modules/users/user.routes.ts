@@ -1,40 +1,32 @@
 import { Router } from 'express';
-import { validateBody } from '../../middlewares/validate.middleware';
-import { CreateUserDto } from './dto/create-user.dto';
+import { authMiddleware } from '../../middlewares/auth.middleware';
 import { userController } from './user.controller';
 
 const router = Router();
 
 /**
  * @swagger
- * /api/users:
- *   post:
- *     summary: Create a new user
+ * /api/users/me/bookmarks:
+ *   get:
+ *     summary: Get current user's bookmarked popup posts
  *     tags: [Users]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [email, password, name]
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *                 minLength: 8
- *               name:
- *                 type: string
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
  *     responses:
- *       201:
- *         description: User created
- *       400:
- *         description: Validation error
- *       409:
- *         description: Email already in use
+ *       200:
+ *         description: Paginated bookmarked popup list
+ *       401:
+ *         description: Unauthorized
  */
-router.post('/', validateBody(CreateUserDto), userController.create.bind(userController));
+router.get('/me/bookmarks', authMiddleware, userController.getMyBookmarks.bind(userController));
 
 export default router;

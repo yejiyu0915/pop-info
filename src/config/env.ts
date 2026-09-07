@@ -17,4 +17,10 @@ export const env = {
   CORS_ORIGIN: process.env.CORS_ORIGIN ?? 'http://localhost:5173',
   JWT_SECRET: requireEnv('JWT_SECRET'),
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ?? '7d',
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
+  EMAIL_FROM: process.env.EMAIL_FROM,
 };
+
+if (env.NODE_ENV === 'production' && env.JWT_SECRET.length < 32) {
+  throw new Error('JWT_SECRET must be at least 32 characters in production');
+}

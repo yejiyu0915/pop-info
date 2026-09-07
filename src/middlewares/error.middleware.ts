@@ -18,11 +18,12 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ): void {
-  const statusCode = err instanceof AppError ? err.statusCode : 500;
+  const isUniqueConstraint = (err as { code?: string }).code === 'P2002';
+  const statusCode = err instanceof AppError ? err.statusCode : isUniqueConstraint ? 409 : 500;
   const isProduction = env.NODE_ENV === 'production';
 
   console.error('[Error]', {
-    message: err.message,
+    message: isUniqueConstraint ? 'Resource already exists' : err.message,
     stack: err.stack,
     statusCode,
   });
@@ -33,7 +34,7 @@ export function errorHandler(
   }
 
   res.status(statusCode).json({
-    message: err.message,
+    message: isUniqueConstraint ? 'Resource already exists' : err.message,
     ...(isProduction ? {} : { stack: err.stack }),
   });
 }

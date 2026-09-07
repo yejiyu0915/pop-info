@@ -1,10 +1,21 @@
 import { prisma } from '../../lib/prisma';
 import { AppError } from '../../middlewares/error.middleware';
-import { assertOwner } from '../../utils/ownership';
+import { assertCommentOwner } from '../../utils/ownership';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
 const authorSelect = { id: true, email: true, name: true } as const;
+
+async function getActorRole(userId: number): Promise<string> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true },
+  });
+  if (!user) {
+    throw new AppError(403, 'Forbidden');
+  }
+  return user.role;
+}
 
 export class CommentService {
   async findByPostId(postId: number) {
@@ -48,7 +59,8 @@ export class CommentService {
       throw new AppError(404, 'Comment not found');
     }
 
-    assertOwner(comment.authorId, userId);
+    const actorRole = await getActorRole(userId);
+    assertCommentOwner(comment.authorId, userId, actorRole);
 
     if (dto.content === undefined) {
       throw new AppError(400, 'content field is required');
@@ -70,7 +82,8 @@ export class CommentService {
       throw new AppError(404, 'Comment not found');
     }
 
-    assertOwner(comment.authorId, userId);
+    const actorRole = await getActorRole(userId);
+    assertCommentOwner(comment.authorId, userId, actorRole);
 
     await prisma.comment.delete({ where: { id } });
   }

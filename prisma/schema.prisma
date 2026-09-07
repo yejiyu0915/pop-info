@@ -8,28 +8,88 @@ datasource db {
   provider = "mysql"
 }
 
+enum PopupCategory {
+  FASHION
+  FOOD
+  ART
+  LIFESTYLE
+  ETC
+}
+
+enum LocationArea {
+  SEONGSU
+  HONGDAE
+  YONGSAN
+  SEOUL
+  GYEONGGI
+  INCHEON
+  ETC
+}
+
+enum UserRole {
+  USER
+  CREATOR
+  ADMIN
+}
+
+enum VerificationPurpose {
+  REGISTER
+  PASSWORD_RESET
+}
+
+model VerificationCode {
+  id        Int                 @id @default(autoincrement())
+  email     String
+  code      String
+  purpose   VerificationPurpose
+  password  String?
+  name      String?
+  verified  Boolean             @default(false)
+  attempts  Int                 @default(0)
+  expiresAt DateTime
+  createdAt DateTime            @default(now())
+
+  @@unique([email, purpose])
+  @@index([expiresAt])
+}
+
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
   password  String
   name      String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  role      UserRole   @default(USER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   posts     Post[]
   comments  Comment[]
+  bookmarks Bookmark[]
 }
 
 model Post {
-  id        Int       @id @default(autoincrement())
+  id        Int           @id @default(autoincrement())
   title     String
-  content   String    @db.Text
+  content   String        @db.Text
+  startDate DateTime
+  endDate   DateTime
+  location  String
+  area      LocationArea  @default(ETC)
+  category  PopupCategory
+  imageUrl  String?
+  isKv      Boolean       @default(false)
   authorId  Int
-  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments  Comment[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  bookmarks Bookmark[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
   @@index([authorId])
+  @@index([category])
+  @@index([location])
+  @@index([area])
+  @@index([isKv])
+  @@index([startDate, endDate])
 }
 
 model Comment {
@@ -43,5 +103,18 @@ model Comment {
   updatedAt DateTime @updatedAt
 
   @@index([authorId])
+  @@index([postId])
+}
+
+model Bookmark {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+  @@index([userId])
   @@index([postId])
 }
