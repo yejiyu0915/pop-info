@@ -37,6 +37,11 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       EMAIL_FROM: ${EMAIL_FROM:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-465}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM: ${SMTP_FROM:-}
       NODE_OPTIONS: --max-old-space-size=128
     mem_limit: 192m
     depends_on:
