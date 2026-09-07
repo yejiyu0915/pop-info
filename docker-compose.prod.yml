@@ -9,7 +9,15 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
     volumes:
       - mysql_data:/var/lib/mysql
-    command: --default-authentication-plugin=mysql_native_password
+    # Tuned for the Always Free 1 GB VM. Keep database data on the named volume.
+    command: >-
+      --default-authentication-plugin=mysql_native_password
+      --innodb-buffer-pool-size=128M
+      --max-connections=30
+      --table-open-cache=128
+      --performance-schema=OFF
+      --skip-name-resolve
+    mem_limit: 300m
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
@@ -29,6 +37,8 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       EMAIL_FROM: ${EMAIL_FROM:-}
+      NODE_OPTIONS: --max-old-space-size=128
+    mem_limit: 192m
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -43,6 +53,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    mem_limit: 384m
 
   web:
     build:
@@ -50,12 +61,16 @@ services:
       args:
         NEXT_PUBLIC_API_URL: ""
     restart: unless-stopped
+    environment:
+      NODE_OPTIONS: --max-old-space-size=160
+    mem_limit: 224m
     depends_on:
       - api
 
   caddy:
     image: caddy:2.8-alpine
     restart: unless-stopped
+    mem_limit: 64m
     ports:
       - "80:80"
       - "443:443"

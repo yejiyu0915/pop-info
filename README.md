@@ -253,6 +253,20 @@ Repository → Settings → Secrets and variables → Actions:
 
 `docker-compose.prod.yml`은 API, Next.js, MySQL, Caddy(HTTPS)를 하나의 내부 네트워크로 실행합니다. MySQL과 API 포트는 외부에 공개되지 않으며, Caddy만 80/443 포트를 엽니다.
 
+### Oracle Always Free 1 GB VM
+
+`VM.Standard.E2.1.Micro`는 접속량이 적은 과제·포트폴리오 용도에만 적합합니다. 첫 Docker 빌드 전에 서버에 2GB swap을 추가해 메모리 부족을 방지하세요.
+
+```bash
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile swap swap defaults 0 0' | sudo tee -a /etc/fstab
+```
+
+Compose 설정은 MySQL과 런타임 컨테이너 메모리를 제한해 이 인스턴스에 맞췄습니다. 대규모 트래픽용 구성은 아닙니다.
+
 서버에서 `.env`를 만들고 아래 값을 설정합니다. 이 파일은 Git에 올리지 않습니다.
 
 ```dotenv
