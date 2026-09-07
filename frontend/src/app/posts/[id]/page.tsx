@@ -16,7 +16,6 @@ import { getAreaLabel } from '@/constants/areas';
 import { isNotFoundError } from '@/lib/axiosError';
 import { deletePost, fetchPost } from '@/lib/posts';
 import { getClosingSoonLabel } from '@/lib/popupStatus';
-import { isCreatorOrAbove } from '@/lib/roles';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { Post } from '@/types/post';
 
@@ -121,7 +120,7 @@ export default function PostDetailPage() {
   }
 
   const isAuthor = user?.id === post.authorId;
-  const canEdit = isAuthor && isCreatorOrAbove(user?.role);
+  const canEdit = isAuthor;
   const closingSoonLabel = getClosingSoonLabel(post.startDate, post.endDate);
 
   const handleCopyAddress = async () => {

@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { PopupPostForm } from '@/components/posts/PopupPostForm';
-import { isCreatorOrAbove } from '@/lib/roles';
 import { createPost } from '@/lib/posts';
 import { useAuthStore } from '@/store/useAuthStore';
 
@@ -15,13 +14,13 @@ export default function WritePostPage() {
 
   useEffect(() => {
     if (isLoading) return;
-    if (!user || !isCreatorOrAbove(user.role)) {
+    if (!user) {
       toast.error('권한이 없습니다.');
       router.replace('/');
     }
   }, [isLoading, user, router]);
 
-  if (isLoading || !user || !isCreatorOrAbove(user.role)) {
+  if (isLoading || !user) {
     return (
       <main className="form-page page-shell">
         <AppHeader />

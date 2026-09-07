@@ -527,12 +527,17 @@
 }
 
 .footer__link {
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: transparent;
   font-size: 0.78rem;
   font-weight: 400;
   letter-spacing: 0.05em;
   text-decoration: none;
   color: color-mix(in oklch, var(--color-on-dark-muted) 82%, transparent);
-  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .footer__link:hover {

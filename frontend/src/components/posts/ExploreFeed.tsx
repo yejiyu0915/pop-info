@@ -10,7 +10,6 @@ import { PostFilterBar } from '@/components/posts/PostFilterBar';
 import { Pagination } from '@/components/ui/Pagination';
 import { fetchPosts } from '@/lib/posts';
 import type { PopupStatus } from '@/lib/popupStatus';
-import { isCreatorOrAbove } from '@/lib/roles';
 import { postHasAllSubTags, SUB_TAG_OPTIONS } from '@/lib/subTags';
 import { postCoversDate } from '@/lib/weekRange';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -316,7 +315,7 @@ function ExploreFeed({ statusFromUrl }: { statusFromUrl?: PopupStatus }) {
           ) : (
             <div className="home__state">
               <p className="home__message">조건에 맞는 팝업이 없습니다.</p>
-              {isCreatorOrAbove(user?.role) && (
+              {user && (
                 <Link href="/posts/write" className="home__link">
                   <span className="icon-wrapper icon-wrapper--sm" aria-hidden>
                     <Plus className="icon-line" size={14} strokeWidth={1.5} />

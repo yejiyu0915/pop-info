@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Compass, LayoutGrid, LogIn, LogOut, Plus, Sparkles, User, UserPlus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Suspense, useEffect, useId, useRef, useState } from 'react';
-import { isCreatorOrAbove } from '@/lib/roles';
 import { useAuthStore } from '@/store/useAuthStore';
 
 const PRIMARY_NAV = [
@@ -51,7 +50,7 @@ function AppHeaderInner() {
 
   const displayName = user?.name ?? user?.email ?? '사용자';
   const initial = displayName.charAt(0).toUpperCase();
-  const showActions = isLoading || !isAuthenticated || isCreatorOrAbove(user?.role);
+  const showActions = true;
 
   useEffect(() => {
     if (!menuOpen) return;

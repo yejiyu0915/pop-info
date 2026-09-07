@@ -9,7 +9,7 @@ async function sendEmail(to: string, subject: string, text: string): Promise<voi
   }
 
   if (!env.RESEND_API_KEY || !env.EMAIL_FROM) {
-    throw new AppError(503, 'Email delivery is not configured');
+    throw new AppError(503, 'Email delivery is not configured yet');
   }
 
   const response = await fetch('https://api.resend.com/emails', {

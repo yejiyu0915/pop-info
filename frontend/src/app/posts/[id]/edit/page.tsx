@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { PopupPostForm } from '@/components/posts/PopupPostForm';
 import { isNotFoundError } from '@/lib/axiosError';
-import { isCreatorOrAbove } from '@/lib/roles';
 import { fetchPost, updatePost } from '@/lib/posts';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { Post } from '@/types/post';
@@ -69,7 +68,7 @@ export default function EditPostPage() {
     !loading &&
     !!post &&
     !!user &&
-    (!isCreatorOrAbove(user.role) || user.id !== post.authorId);
+    user.id !== post.authorId;
 
   useEffect(() => {
     if (!isUnauthorized) return;
@@ -113,7 +112,7 @@ export default function EditPostPage() {
     );
   }
 
-  if (!user || !isCreatorOrAbove(user.role) || user.id !== post.authorId) {
+  if (!user || user.id !== post.authorId) {
     return null;
   }
 

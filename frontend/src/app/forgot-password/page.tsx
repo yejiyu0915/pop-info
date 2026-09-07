@@ -61,6 +61,8 @@ export default function ForgotPasswordPage() {
         const status = error.response?.status;
         if (status === 400) {
           toast.error('입력 정보를 확인해 주세요.');
+        } else if (status === 503) {
+          toast.info('비밀번호 재설정 이메일 발송 기능은 현재 준비 중입니다. 잠시 후 다시 시도해 주세요.');
         } else {
           toast.error('인증 코드 발송에 실패했습니다.');
         }

@@ -78,6 +78,8 @@ export default function RegisterPage() {
           toast.error('이미 사용 중인 이메일입니다.');
         } else if (status === 400) {
           toast.error('입력 정보를 확인해 주세요. (비밀번호는 영문·숫자 포함 8자 이상)');
+        } else if (status === 503) {
+          toast.info('이메일 인증 발송 기능은 현재 준비 중입니다. 잠시 후 다시 시도해 주세요.');
         } else {
           toast.error('인증 코드 발송에 실패했습니다.');
         }

@@ -10,7 +10,7 @@
 |------|------|
 | `/` | 홈 — KV 배너, 필터, 타임라인, 팝업 카드 그리드 |
 | `/posts/[id]` | 팝업 상세 — 북마크, 댓글, 주소 복사 |
-| `/posts/write`, `/posts/[id]/edit` | 팝업 등록·수정 (CREATOR+) |
+| `/posts/write`, `/posts/[id]/edit` | 팝업 등록·수정 (로그인한 본인 글) |
 | `/login`, `/register`, `/forgot-password` | 인증 (이메일 인증·비밀번호 재설정) |
 | `/mypage` | 북마크한 팝업 목록 |
 
@@ -73,7 +73,7 @@ flowchart LR
 | POST | `/api/auth/logout` | X | 로그아웃 (쿠키 삭제) |
 | GET | `/api/posts` | X | 팝업 목록 (필터·페이징) |
 | GET | `/api/posts/kv` | X | KV 배너 팝업 |
-| POST | `/api/posts` | O | 팝업 등록 (CREATOR+) |
+| POST | `/api/posts` | O | 팝업 등록 (로그인 필요) |
 | PATCH | `/api/posts/:id` | O | 본인 팝업 수정 |
 | DELETE | `/api/posts/:id` | O | 본인 팝업 삭제 |
 | POST | `/api/posts/:id/bookmarks` | O | 북마크 토글 |

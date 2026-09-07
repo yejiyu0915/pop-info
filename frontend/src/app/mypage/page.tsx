@@ -7,7 +7,6 @@ import { AppHeader } from '@/components/layout/AppHeader';
 import { PostCard } from '@/components/posts/PostCard';
 import { Pagination } from '@/components/ui/Pagination';
 import { fetchMyBookmarks } from '@/lib/bookmarks';
-import { isCreatorOrAbove } from '@/lib/roles';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { PaginatedPosts } from '@/types/post';
 
@@ -94,7 +93,7 @@ export default function MyPage() {
           </div>
           <div className="mypage__overview-action">
             <Link href="/explore" className="mypage__text-link"><Compass className="icon-line" size={15} strokeWidth={1.5} />팝업 탐색</Link>
-            {isCreatorOrAbove(user?.role) && (
+            {user && (
               <Link href="/posts/write" className="mypage__text-link"><Plus className="icon-line" size={15} strokeWidth={1.5} />팝업 등록</Link>
             )}
           </div>

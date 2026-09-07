@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { authMiddleware, optionalAuthMiddleware } from '../../middlewares/auth.middleware';
-import { creatorMiddleware } from '../../middlewares/creator.middleware';
 import { csrfMiddleware } from '../../middlewares/csrf.middleware';
 import { validateBody } from '../../middlewares/validate.middleware';
 import { bookmarkController } from '../bookmarks/bookmark.controller';
@@ -80,10 +79,10 @@ router.get('/kv', optionalAuthMiddleware, postController.findKv.bind(postControl
  * @swagger
  * /api/posts:
  *   post:
- *     summary: Create a new popup post (requires CREATOR or ADMIN)
+ *     summary: Create a new popup post (requires login)
  *     tags: [Posts]
  */
-router.post('/', authMiddleware, csrfMiddleware, creatorMiddleware, validateBody(CreatePostDto), postController.create.bind(postController));
+router.post('/', authMiddleware, csrfMiddleware, validateBody(CreatePostDto), postController.create.bind(postController));
 
 /**
  * @swagger
@@ -116,8 +115,8 @@ router.post('/:id/bookmark', authMiddleware, csrfMiddleware, bookmarkController.
  */
 router.get('/:id', optionalAuthMiddleware, postController.findById.bind(postController));
 
-router.patch('/:id', authMiddleware, csrfMiddleware, creatorMiddleware, validateBody(UpdatePostDto), postController.update.bind(postController));
-router.delete('/:id', authMiddleware, csrfMiddleware, creatorMiddleware, postController.delete.bind(postController));
+router.patch('/:id', authMiddleware, csrfMiddleware, validateBody(UpdatePostDto), postController.update.bind(postController));
+router.delete('/:id', authMiddleware, csrfMiddleware, postController.delete.bind(postController));
 
 router.use('/:postId/comments', commentRoutes);
 

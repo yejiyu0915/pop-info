@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 export function AppFooter() {
   return (
@@ -14,12 +17,20 @@ export function AppFooter() {
         </div>
         <div className="footer__meta">
           <nav className="footer__links" aria-label="약관">
-            <Link href="#" className="footer__link">
+            <button
+              type="button"
+              className="footer__link"
+              onClick={() => toast.info('이용약관 페이지는 준비 중입니다.')}
+            >
               이용약관
-            </Link>
-            <Link href="#" className="footer__link">
+            </button>
+            <button
+              type="button"
+              className="footer__link"
+              onClick={() => toast.info('개인정보처리방침 페이지는 준비 중입니다.')}
+            >
               개인정보처리방침
-            </Link>
+            </button>
           </nav>
           <p className="footer__copy">Copyright 2026 POPCAST.</p>
         </div>
