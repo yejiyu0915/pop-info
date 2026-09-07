@@ -30,10 +30,13 @@
     "express": "^5.2.1",
     "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.3",
-    "mariadb": "^3.5.3",
+    "mariadb": "3.5.4",
     "reflect-metadata": "^0.2.2",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1"
+  },
+  "overrides": {
+    "mariadb": "$mariadb"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
