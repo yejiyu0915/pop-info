@@ -56,6 +56,91 @@
   border-radius: var(--radius-card);
 }
 
+.mypage__profile-head {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.mypage__profile-edit,
+.mypage__profile-save,
+.mypage__profile-cancel,
+.mypage__password-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-charcoal);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mypage__profile-edit:hover,
+.mypage__profile-cancel:hover,
+.mypage__password-link:hover {
+  color: var(--color-brick);
+}
+
+.mypage__profile-form {
+  display: grid;
+  width: 100%;
+  gap: 0.45rem;
+}
+
+.mypage__profile-form label {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.mypage__profile-form input {
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: 0.5rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-charcoal);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-charcoal);
+  font: inherit;
+  outline: none;
+}
+
+.mypage__profile-form input:focus-visible {
+  border-bottom-color: var(--color-brick);
+}
+
+.mypage__profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 0.2rem;
+}
+
+.mypage__profile-save {
+  color: var(--color-brick);
+}
+
+.mypage__profile-save:disabled,
+.mypage__profile-cancel:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.mypage__password-link {
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+}
+
 .mypage__profile-label,
 .mypage__role,
 .mypage__count {

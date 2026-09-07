@@ -2,21 +2,26 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Compass, Heart, MapPinned, Plus, Sparkles } from 'lucide-react';
+import { Check, Compass, Heart, KeyRound, MapPinned, Pencil, Plus, Sparkles, X } from 'lucide-react';
+import { toast } from 'sonner';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { PostCard } from '@/components/posts/PostCard';
 import { Pagination } from '@/components/ui/Pagination';
+import { api } from '@/lib/api';
 import { fetchMyBookmarks } from '@/lib/bookmarks';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { PaginatedPosts } from '@/types/post';
 
 export default function MyPage() {
-  const { user, isLoading } = useAuthStore();
+  const { user, isLoading, setUser } = useAuthStore();
   const [page, setPage] = useState(1);
   const [bookmarks, setBookmarks] = useState<PaginatedPosts | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [name, setName] = useState('');
+  const [savingProfile, setSavingProfile] = useState(false);
 
   const handlePageChange = (nextPage: number) => {
     setLoading(true);
@@ -28,6 +33,36 @@ export default function MyPage() {
     setLoading(true);
     setError(false);
     setRetryKey((k) => k + 1);
+  };
+
+  const startProfileEdit = () => {
+    setName(user?.name ?? '');
+    setIsEditingProfile(true);
+  };
+
+  const cancelProfileEdit = () => {
+    setIsEditingProfile(false);
+    setName('');
+  };
+
+  const saveProfile = async () => {
+    const trimmedName = name.trim();
+    if (trimmedName.length < 2 || trimmedName.length > 50) {
+      toast.error('이름은 2자 이상 50자 이하로 입력해 주세요.');
+      return;
+    }
+
+    setSavingProfile(true);
+    try {
+      const { data } = await api.patch<{ user: NonNullable<typeof user> }>('/api/users/me', { name: trimmedName });
+      setUser(data.user);
+      setIsEditingProfile(false);
+      toast.success('계정 정보가 수정됐어요.');
+    } catch {
+      // The shared API interceptor displays a safe error message.
+    } finally {
+      setSavingProfile(false);
+    }
   };
 
   const roleLabel = user?.role === 'ADMIN' ? '관리자' : user?.role === 'CREATOR' ? '크리에이터' : '탐색자';
@@ -75,10 +110,42 @@ export default function MyPage() {
             <p className="mypage__lead">마음에 둔 팝업을 다시 확인하고, 방문 계획을 이어가세요.</p>
           </div>
           <div className="mypage__profile" aria-label="내 계정 정보">
-            <span className="mypage__profile-label">계정</span>
-            <strong className="mypage__profile-name">{user?.name ?? '사용자'}</strong>
-            <span className="mypage__profile-email">{user?.email}</span>
-            <span className="mypage__role">{roleLabel}</span>
+            <div className="mypage__profile-head">
+              <span className="mypage__profile-label">계정</span>
+              {!isEditingProfile && (
+                <button type="button" className="mypage__profile-edit" onClick={startProfileEdit}>
+                  <Pencil className="icon-line" size={14} strokeWidth={1.7} />정보 수정
+                </button>
+              )}
+            </div>
+            {isEditingProfile ? (
+              <div className="mypage__profile-form">
+                <label htmlFor="profile-name">이름</label>
+                <input
+                  id="profile-name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  maxLength={50}
+                  autoFocus
+                  disabled={savingProfile}
+                />
+                <div className="mypage__profile-actions">
+                  <button type="button" className="mypage__profile-save" onClick={saveProfile} disabled={savingProfile}>
+                    <Check className="icon-line" size={15} strokeWidth={2} />{savingProfile ? '저장 중' : '저장'}
+                  </button>
+                  <button type="button" className="mypage__profile-cancel" onClick={cancelProfileEdit} disabled={savingProfile}>
+                    <X className="icon-line" size={15} strokeWidth={2} />취소
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <strong className="mypage__profile-name">{user?.name ?? '사용자'}</strong>
+                <span className="mypage__profile-email">{user?.email}</span>
+                <span className="mypage__role">{roleLabel}</span>
+                <Link href="/forgot-password" className="mypage__password-link"><KeyRound className="icon-line" size={14} strokeWidth={1.7} />비밀번호 재설정</Link>
+              </>
+            )}
           </div>
         </section>
 

@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import { prisma } from '../../lib/prisma';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { AppError } from '../../middlewares/error.middleware';
 
 const SALT_ROUNDS = 10;
@@ -40,6 +41,14 @@ export class UserService {
       select: { id: true, email: true, name: true, createdAt: true },
     });
     return user;
+  }
+
+  async updateProfile(id: number, dto: UpdateProfileDto) {
+    return prisma.user.update({
+      where: { id },
+      data: { name: dto.name.trim() },
+      select: { id: true, email: true, name: true, role: true },
+    });
   }
 }
 

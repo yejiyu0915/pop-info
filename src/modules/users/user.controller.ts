@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { bookmarkService } from '../bookmarks/bookmark.service';
 import { userService } from './user.service';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 function parsePagination(query: Request['query']) {
   const page = Math.max(1, parseInt(String(query.page ?? '1'), 10) || 1);
@@ -9,6 +10,15 @@ function parsePagination(query: Request['query']) {
 }
 
 export class UserController {
+  async updateMyProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = await userService.updateProfile(req.user!.id, req.body as UpdateProfileDto);
+      res.json({ user });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getMyBookmarks(req: Request, res: Response, next: NextFunction) {
     try {
       const { page, limit } = parsePagination(req.query);
