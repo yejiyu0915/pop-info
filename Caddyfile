@@ -2,6 +2,5 @@
   encode zstd gzip
 
   reverse_proxy /api/* api:3000
-  reverse_proxy /api-docs* api:3000
   reverse_proxy web:5173
 }

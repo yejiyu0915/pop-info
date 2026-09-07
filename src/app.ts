@@ -34,7 +34,10 @@ app.use(
 app.use(cookieParser());
 app.use(express.json({ limit: '10kb' }));
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+if (env.NODE_ENV !== 'production') {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
+
 app.use('/api', routes);
 
 app.use((_req, res) => {

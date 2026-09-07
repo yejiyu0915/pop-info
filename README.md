@@ -81,7 +81,7 @@ flowchart LR
 | PATCH | `/api/comments/:id` | O | 본인 댓글 수정 (ADMIN 모더레이션) |
 | DELETE | `/api/comments/:id` | O | 본인 댓글 삭제 (ADMIN 모더레이션) |
 
-Swagger 문서: `http://localhost:3000/api-docs`
+Swagger 문서(로컬 개발 전용): `http://localhost:3000/api-docs`
 
 ---
 
@@ -127,7 +127,7 @@ npm run dev
 
 - 프론트: http://localhost:5173
 - API: http://localhost:3000
-- Swagger: http://localhost:3000/api-docs
+- Swagger(로컬 개발 전용): http://localhost:3000/api-docs
 
 ---
 
