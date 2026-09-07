@@ -1,7 +1,12 @@
 import { VerificationPurpose } from '../generated/prisma/client';
 import { AppError } from '../middlewares/error.middleware';
 import { prisma } from './prisma';
-import { CODE_TTL_MS, generateVerificationCode, hashVerificationCode } from './emailVerificationStore';
+import {
+  CODE_TTL_MS,
+  generateVerificationCode,
+  hashVerificationCode,
+  verificationCodeMatches,
+} from './emailVerificationStore';
 
 export { CODE_TTL_MS, generateVerificationCode };
 
@@ -64,7 +69,7 @@ export async function verifyPasswordReset(email: string, code: string): Promise<
     throw new AppError(429, 'Too many invalid verification attempts. Please request a new code.');
   }
 
-  if (entry.code !== hashVerificationCode(code)) {
+  if (!verificationCodeMatches(entry.code, code)) {
     const attempts = entry.attempts + 1;
     if (attempts >= 5) {
       await prisma.verificationCode.delete({ where: { id: entry.id } });
@@ -101,7 +106,7 @@ export async function consumePasswordResetVerified(email: string, code: string):
     throw new AppError(400, 'Email verification is required');
   }
 
-  if (entry.code !== hashVerificationCode(code)) {
+  if (!verificationCodeMatches(entry.code, code)) {
     throw new AppError(400, 'Invalid verification code');
   }
 

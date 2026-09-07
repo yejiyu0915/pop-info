@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
+import { BadgeCheck, Eye, EyeOff, KeyRound, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { forgotPassword, resetPassword, verifyResetCode } from '@/lib/auth';
+import { isValidPassword, PASSWORD_RULE_MESSAGE } from '@/lib/password';
 import { isAxiosError } from 'axios';
 
 export default function ForgotPasswordPage() {
@@ -19,6 +21,8 @@ export default function ForgotPasswordPage() {
   const [sendingCode, setSendingCode] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const resetVerificationState = () => {
     setCodeSent(false);
@@ -47,13 +51,15 @@ export default function ForgotPasswordPage() {
       setVerificationCode('');
       setNewPassword('');
       setConfirmPassword('');
-      toast.success('인증 코드가 발송되었습니다. 서버 콘솔에서 코드를 확인하세요.');
+      toast.success(
+        process.env.NODE_ENV === 'development'
+          ? '재설정 코드를 요청했습니다. 개발 중에는 API 실행 창에서 확인할 수 있습니다.'
+          : '등록된 계정인 경우 이메일로 재설정 코드를 보냈습니다.',
+      );
     } catch (error) {
       if (isAxiosError(error)) {
         const status = error.response?.status;
-        if (status === 404) {
-          toast.error('존재하지 않는 회원입니다.');
-        } else if (status === 400) {
+        if (status === 400) {
           toast.error('입력 정보를 확인해 주세요.');
         } else {
           toast.error('인증 코드 발송에 실패했습니다.');
@@ -100,10 +106,14 @@ export default function ForgotPasswordPage() {
       toast.error('새 비밀번호가 일치하지 않습니다.');
       return;
     }
+    if (!isValidPassword(newPassword)) {
+      toast.error(PASSWORD_RULE_MESSAGE);
+      return;
+    }
 
     setSubmitting(true);
     try {
-      await resetPassword({ email, code: verificationCode, newPassword });
+      await resetPassword({ email: email.trim(), code: verificationCode, newPassword });
       toast.success('비밀번호가 변경되었습니다. 로그인해 주세요.');
       router.push('/login');
     } catch (error) {
@@ -128,7 +138,9 @@ export default function ForgotPasswordPage() {
       <AppHeader />
       <div className="container">
         <div className="auth">
+          <p className="auth__eyebrow"><KeyRound size={14} aria-hidden="true" /> ACCOUNT RECOVERY</p>
           <h1 className="auth__title">비밀번호 찾기</h1>
+          <p className="auth__description">가입한 이메일로 본인 확인 후 새 비밀번호를 설정합니다.</p>
           <form onSubmit={handleSubmit} className="auth__form">
         <label className="auth__field">
           <span className="auth__label">이메일</span>
@@ -138,6 +150,8 @@ export default function ForgotPasswordPage() {
             value={email}
             onChange={(e) => handleEmailChange(e.target.value)}
             required
+            autoComplete="email"
+            placeholder="name@example.com"
           />
         </label>
 
@@ -147,7 +161,8 @@ export default function ForgotPasswordPage() {
           onClick={handleSendCode}
           disabled={sendingCode}
         >
-          {sendingCode ? '발송 중...' : '인증 코드 발송'}
+          <Mail size={16} aria-hidden="true" />
+          {sendingCode ? '발송 중...' : '재설정 코드 받기'}
         </button>
 
         {codeSent && (
@@ -178,28 +193,44 @@ export default function ForgotPasswordPage() {
 
         {isCodeVerified && (
           <>
-            <p className="auth__verified">이메일 인증이 완료되었습니다.</p>
+            <p className="auth__verified"><BadgeCheck size={16} aria-hidden="true" /> 이메일 인증이 완료되었습니다.</p>
             <label className="auth__field">
               <span className="auth__label">새 비밀번호</span>
-              <input
-                type="password"
-                className="auth__input"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                minLength={8}
-              />
+              <span className="auth__password-wrap">
+                <input
+                  type={showNewPassword ? 'text' : 'password'}
+                  className="auth__input"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  aria-describedby="reset-password-rule"
+                />
+                <button type="button" className="auth__password-toggle" onClick={() => setShowNewPassword((value) => !value)} aria-label={showNewPassword ? '비밀번호 숨기기' : '비밀번호 보기'}>
+                  {showNewPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
+                </button>
+              </span>
+              <span id="reset-password-rule" className="auth__hint">{PASSWORD_RULE_MESSAGE}</span>
             </label>
             <label className="auth__field">
               <span className="auth__label">새 비밀번호 확인</span>
-              <input
-                type="password"
-                className="auth__input"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                minLength={8}
-              />
+              <span className="auth__password-wrap">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  className="auth__input"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  aria-invalid={Boolean(confirmPassword) && newPassword !== confirmPassword}
+                />
+                <button type="button" className="auth__password-toggle" onClick={() => setShowConfirmPassword((value) => !value)} aria-label={showConfirmPassword ? '비밀번호 숨기기' : '비밀번호 보기'}>
+                  {showConfirmPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
+                </button>
+              </span>
+              {confirmPassword && newPassword !== confirmPassword && <span className="auth__hint auth__hint--error">비밀번호가 일치하지 않습니다.</span>}
             </label>
           </>
         )}

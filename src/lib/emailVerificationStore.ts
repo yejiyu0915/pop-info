@@ -25,7 +25,7 @@ export function hashVerificationCode(code: string): string {
   return crypto.createHmac('sha256', env.JWT_SECRET).update(code).digest('hex');
 }
 
-function codeMatches(storedHash: string, code: string): boolean {
+export function verificationCodeMatches(storedHash: string, code: string): boolean {
   const expected = Buffer.from(storedHash, 'hex');
   const actual = Buffer.from(hashVerificationCode(code), 'hex');
   return expected.length === actual.length && crypto.timingSafeEqual(expected, actual);
@@ -37,7 +37,7 @@ async function verifyCode(entry: { id: number; code: string; attempts: number },
     throw new AppError(429, 'Too many invalid verification attempts. Please request a new code.');
   }
 
-  if (!codeMatches(entry.code, code)) {
+  if (!verificationCodeMatches(entry.code, code)) {
     const attempts = entry.attempts + 1;
     if (attempts >= MAX_CODE_ATTEMPTS) {
       await prisma.verificationCode.delete({ where: { id: entry.id } });

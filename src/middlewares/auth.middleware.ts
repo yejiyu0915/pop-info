@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
 import { prisma } from '../lib/prisma';
 import { UserRole } from '../modules/users/dto/user-role.enum';
+import { CSRF_COOKIE_NAME } from './csrf.middleware';
 import { AppError } from './error.middleware';
 
 interface JwtPayload {
@@ -10,6 +11,22 @@ interface JwtPayload {
   email: string;
   name: string | null;
   role?: UserRole;
+}
+
+const AUTH_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: env.NODE_ENV === 'production',
+  sameSite: 'strict' as const,
+};
+
+const CSRF_COOKIE_OPTIONS = {
+  secure: env.NODE_ENV === 'production',
+  sameSite: 'strict' as const,
+};
+
+function clearInvalidAuthCookies(res: Response): void {
+  res.clearCookie('access_token', AUTH_COOKIE_OPTIONS);
+  res.clearCookie(CSRF_COOKIE_NAME, CSRF_COOKIE_OPTIONS);
 }
 
 async function setUserFromToken(req: Request, token: string): Promise<boolean> {
@@ -33,7 +50,7 @@ async function setUserFromToken(req: Request, token: string): Promise<boolean> {
   }
 }
 
-export async function authMiddleware(req: Request, _res: Response, next: NextFunction) {
+export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const token = req.cookies?.access_token;
 
   if (!token) {
@@ -41,6 +58,7 @@ export async function authMiddleware(req: Request, _res: Response, next: NextFun
   }
 
   if (!(await setUserFromToken(req, token))) {
+    clearInvalidAuthCookies(res);
     return next(new AppError(401, 'Unauthorized'));
   }
 

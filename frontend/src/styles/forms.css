@@ -2,7 +2,7 @@
 
 .auth {
   max-width: 28rem;
-  margin: 0 auto;
+  margin: clamp(1rem, 5vw, 4rem) auto;
   background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
@@ -12,12 +12,30 @@
   -webkit-backdrop-filter: none;
 }
 
+.auth__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.75rem;
+  color: var(--color-brick);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
 .auth__title {
   font-family: var(--font-display), 'Syne', sans-serif;
   font-size: var(--font-section);
   font-weight: 700;
   letter-spacing: -0.02em;
-  margin: 0 0 2rem;
+  margin: 0;
+}
+
+.auth__description {
+  margin: 0.65rem 0 2rem;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
 }
 
 .auth__form {
@@ -50,6 +68,51 @@
   color: var(--color-charcoal);
   outline: none;
   font-family: inherit;
+}
+
+.auth__password-wrap {
+  position: relative;
+  display: block;
+}
+
+.auth__password-wrap .auth__input {
+  padding-right: 2.5rem;
+}
+
+.auth__password-toggle {
+  position: absolute;
+  right: 0;
+  bottom: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.auth__password-toggle:hover {
+  color: var(--color-brick);
+  background: var(--color-surface-muted);
+}
+
+.auth__password-toggle:focus-visible {
+  outline: 2px solid var(--color-brick);
+  outline-offset: 2px;
+}
+
+.auth__hint {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.auth__hint--error {
+  color: var(--color-accent-yellow);
 }
 
 .auth__input:focus {
@@ -106,16 +169,25 @@
 }
 
 .auth__btn--secondary {
-  color: var(--color-muted);
-  border-bottom: 1px solid var(--color-line);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-brick);
+  border: 1px solid var(--color-brick);
+  border-radius: var(--radius-control);
+  padding: 0.55rem 0.8rem;
 }
 
 .auth__btn--secondary:hover:not(:disabled) {
-  color: var(--color-charcoal);
-  border-bottom-color: var(--color-charcoal);
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .auth__verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: 0.85rem;
   color: var(--color-deep-green);
   margin: 0;
