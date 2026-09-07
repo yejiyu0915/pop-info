@@ -276,8 +276,16 @@ MYSQL_USER=popup_user
 MYSQL_PASSWORD=<long-unique-password>
 MYSQL_ROOT_PASSWORD=<another-long-unique-password>
 JWT_SECRET=<at-least-32-random-characters>
-RESEND_API_KEY=<optional-until-email-is-enabled>
-EMAIL_FROM="POPCAST <noreply@popup.example.com>"
+# 이메일 발송: 둘 중 하나만 선택
+# 1) Gmail SMTP (도메인 없이 과제용으로 사용 가능)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=dedicated-sender@gmail.com
+SMTP_PASS=google-app-password-not-to-be-committed
+SMTP_FROM="POPCAST <dedicated-sender@gmail.com>"
+# 2) Resend (외부 수신자 발송은 검증된 도메인 필요)
+# RESEND_API_KEY=re_xxxxxxxxx
+# EMAIL_FROM="POPCAST <noreply@popup.example.com>"
 ```
 
 도메인의 DNS A 레코드를 서버 IP로 연결한 뒤 실행합니다.
@@ -310,7 +318,8 @@ rm -rf frontend/.git
 | `CORS_ORIGIN` | 프론트엔드 origin |
 | `JWT_SECRET` | JWT 서명 키 |
 | `JWT_EXPIRES_IN` | 토큰 만료 (기본 7d) |
-| `RESEND_API_KEY` / `EMAIL_FROM` | 프로덕션 인증 메일 발송용 Resend API 키·검증된 발신자 |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` | Gmail 등 SMTP 인증 메일 발송 설정. 과제용 Gmail은 앱 비밀번호 사용 |
+| `RESEND_API_KEY` / `EMAIL_FROM` | SMTP를 사용하지 않을 때의 Resend API 키·검증된 발신자 |
 
 ### 프론트엔드 (`frontend/.env.local` / `.env.production`)
 
