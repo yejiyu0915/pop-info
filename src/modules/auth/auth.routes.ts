@@ -48,7 +48,7 @@ router.post('/login', authRateLimit, validateBody(LoginDto), authController.logi
  * @swagger
  * /api/auth/send-verification-code:
  *   post:
- *     summary: Send 6-digit email verification code (logged to server console in demo)
+ *     summary: Send a 6-digit email verification code
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -140,7 +140,7 @@ router.post('/register', validateBody(RegisterDto), authController.register.bind
  * @swagger
  * /api/auth/forgot-password:
  *   post:
- *     summary: Send 6-digit password reset code (logged to server console in demo)
+ *     summary: Send a 6-digit password reset code
  *     tags: [Auth]
  *     requestBody:
  *       required: true
