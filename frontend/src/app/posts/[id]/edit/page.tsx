@@ -81,7 +81,7 @@ export default function EditPostPage() {
       <EditShell>
         <div className="home__state">
           <p className="home__message">팝업을 찾을 수 없습니다.</p>
-          <Link href="/" className="home__link">
+          <Link href="/explore" className="home__link">
             목록으로
           </Link>
         </div>

@@ -68,7 +68,7 @@ export default function PostDetailPage() {
     try {
       await deletePost(id);
       toast.success('팝업이 삭제되었습니다.');
-      router.push('/');
+      router.push('/explore');
     } finally {
       setDeleting(false);
     }
@@ -81,7 +81,7 @@ export default function PostDetailPage() {
         <div className="container">
           <div className="home__state">
             <p className="home__message">팝업을 찾을 수 없습니다.</p>
-            <Link href="/" className="home__link">
+            <Link href="/explore" className="home__link">
               목록으로
             </Link>
           </div>
@@ -249,7 +249,7 @@ export default function PostDetailPage() {
 
         <CommentSection postId={post.id} initialComments={post.comments} />
 
-        <Link href="/" className="detail__back">
+        <Link href="/explore" className="detail__back">
           <ArrowLeft className="icon-line" size={14} strokeWidth={1.5} aria-hidden />
           목록으로
         </Link>

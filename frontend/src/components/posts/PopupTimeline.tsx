@@ -57,6 +57,22 @@ function getWeekDays(anchor: Date): Date[] {
   });
 }
 
+/** Full month grid (Sun–Sat rows), including leading/trailing outside days. */
+function getMonthGridDays(year: number, month: number): Date[] {
+  const { start, end } = getMonthBounds(year, month);
+  const gridStart = new Date(start);
+  gridStart.setDate(start.getDate() - start.getDay());
+  const lastOffset = 6 - end.getDay();
+  const totalDays =
+    Math.round((end.getTime() - gridStart.getTime()) / 86_400_000) + 1 + lastOffset;
+
+  return Array.from({ length: totalDays }, (_, i) => {
+    const d = new Date(gridStart);
+    d.setDate(gridStart.getDate() + i);
+    return d;
+  });
+}
+
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'] as const;
 
 const CATEGORY_DOT_CLASS: Record<PopupCategory, string> = {
@@ -161,28 +177,16 @@ export function PopupTimeline({
   }, [posts, monthStartKey, monthEndKey, weekOnly]);
 
   const todayKey = toDayKey(new Date());
-  const isCurrentMonth =
-    viewYear === new Date().getFullYear() && viewMonth === new Date().getMonth();
 
-  /** Current month → week of today; other months → week of the 1st. Week scope always uses this week. */
-  const weekDays = useMemo(() => {
-    const now = new Date();
-    if (weekOnly) return getWeekDays(now);
-    if (selectedDayKey && !weekOnly) {
-      const [y, m, d] = selectedDayKey.split('-').map(Number);
-      if (y === viewYear && m - 1 === viewMonth) {
-        return getWeekDays(new Date(y, m - 1, d));
-      }
-    }
-    const anchor = isCurrentMonth
-      ? new Date(viewYear, viewMonth, now.getDate())
-      : new Date(viewYear, viewMonth, 1);
-    return getWeekDays(anchor);
-  }, [weekOnly, isCurrentMonth, viewYear, viewMonth, selectedDayKey]);
+  /** Week scope: this week only. Month/strip: full 1~말일 calendar grid. */
+  const calendarDays = useMemo(() => {
+    if (weekOnly) return getWeekDays(new Date());
+    return getMonthGridDays(viewYear, viewMonth);
+  }, [weekOnly, viewYear, viewMonth]);
 
   const daysWithPosts = useMemo(() => {
     const keys = new Set<number>();
-    for (const day of weekDays) {
+    for (const day of calendarDays) {
       const key = toDayKey(day);
       const hasEvent = posts.some((post) => {
         const startKey = toDayKey(new Date(post.startDate));
@@ -192,7 +196,7 @@ export function PopupTimeline({
       if (hasEvent) keys.add(key);
     }
     return keys;
-  }, [posts, weekDays]);
+  }, [posts, calendarDays]);
 
   const handlePrevMonth = () => {
     if (viewMonth === 0) {
@@ -248,8 +252,19 @@ export function PopupTimeline({
         </div>
       </div>
 
-      <div className="timeline__week" role={onDaySelect ? 'group' : 'list'} aria-label="주간 날짜">
-        {weekDays.map((day) => {
+      <div
+        className={`timeline__week${weekOnly ? '' : ' timeline__week--month'}`}
+        role={onDaySelect ? 'group' : 'list'}
+        aria-label={weekOnly ? '주간 날짜' : '월간 날짜'}
+      >
+        {!weekOnly
+          ? WEEKDAY_LABELS.map((label) => (
+              <span key={label} className="timeline__weekday-label" aria-hidden>
+                {label}
+              </span>
+            ))
+          : null}
+        {calendarDays.map((day) => {
           const key = toDayKey(day);
           const iso = toIsoDate(day);
           const inMonth = day.getMonth() === viewMonth && day.getFullYear() === viewYear;
@@ -258,7 +273,7 @@ export function PopupTimeline({
           const isSelected = selectedDayKey === iso;
           const dayClass = [
             'timeline__day',
-            !inMonth && 'timeline__day--outside',
+            !weekOnly && !inMonth && 'timeline__day--outside',
             isToday && 'timeline__day--today',
             hasEvent && 'timeline__day--has-event',
             isSelected && 'timeline__day--selected',
@@ -270,14 +285,18 @@ export function PopupTimeline({
           if (onDaySelect) {
             return (
               <button
-                key={key}
+                key={`${key}-${iso}`}
                 type="button"
                 className={dayClass}
                 aria-pressed={isSelected}
                 aria-current={isToday ? 'date' : undefined}
+                aria-label={`${day.getMonth() + 1}월 ${day.getDate()}일`}
+                disabled={!weekOnly && !inMonth}
                 onClick={() => handleDayClick(day)}
               >
-                <span className="timeline__day-weekday">{WEEKDAY_LABELS[day.getDay()]}</span>
+                {weekOnly ? (
+                  <span className="timeline__day-weekday">{WEEKDAY_LABELS[day.getDay()]}</span>
+                ) : null}
                 <span className="timeline__day-num">{day.getDate()}</span>
                 {hasEvent ? <span className="timeline__day-mark" aria-hidden /> : null}
               </button>
@@ -286,12 +305,14 @@ export function PopupTimeline({
 
           return (
             <div
-              key={key}
+              key={`${key}-${iso}`}
               role="listitem"
               className={dayClass}
               aria-current={isToday ? 'date' : undefined}
             >
-              <span className="timeline__day-weekday">{WEEKDAY_LABELS[day.getDay()]}</span>
+              {weekOnly ? (
+                <span className="timeline__day-weekday">{WEEKDAY_LABELS[day.getDay()]}</span>
+              ) : null}
               <span className="timeline__day-num">{day.getDate()}</span>
               {hasEvent ? <span className="timeline__day-mark" aria-hidden /> : null}
             </div>
